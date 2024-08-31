@@ -1,8 +1,7 @@
-// Učitavanje grupe "A" iz JSON fajla
 async function loadGroupA() {
-  const response = await fetch("groups.json"); // Učitaj JSON fajl
-  const data = await response.json(); // Parsiraj JSON u JavaScript objekat
-  return data["A"]; // Vrati podatke iz grupe "A"
+  const response = await fetch("groups.json");
+  const data = await response.json();
+  return data["A"];
 }
 
 // Funkcija koja koristi podatke tima
