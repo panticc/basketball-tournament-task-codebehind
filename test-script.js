@@ -94,8 +94,8 @@ loadGroup("A").then((teams) => {
 
 // Funkcija za simulaciju grupne faze i prikaz po kolima
 function simulateGroupStage(teams) {
-  let results = []; // Čuva rezultate svih utakmica po kolima
-  let standings = {}; // Čuva broj bodova po timovima
+  let results = [];
+  let standings = {};
 
   // Inicijalizacija bodova za svaki tim
   teams.forEach((team) => {
