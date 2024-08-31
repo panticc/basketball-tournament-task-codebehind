@@ -4,7 +4,6 @@ async function loadGroupA() {
   return data["A"];
 }
 
-// Funkcija koja koristi podatke tima
 function processTeamData(teamName, isoCode, fibaRank) {
   // console.log(`Team: ${teamName}, ISO: ${isoCode}, FIBA Rank: ${fibaRank}`);
 }
@@ -43,7 +42,7 @@ function simulateMatch(team1, team2) {
     team1.FIBARanking,
     team2.FIBARanking
   );
-  const randomValue = Math.random(); // Generiši nasumičan broj između 0 i 1
+  const randomValue = Math.random();
 
   if (randomValue < probabilityTeam1Wins) {
     // Tim 1 pobeđuje
@@ -85,7 +84,7 @@ function simulateGroupMatches(teams) {
 async function loadGroup(groupName) {
   const response = await fetch("groups.json");
   const data = await response.json();
-  return data[groupName]; // Vraća grupu koja je prosleđena
+  return data[groupName];
 }
 
 // Primer korišćenja sa grupom A
