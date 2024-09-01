@@ -1,7 +1,20 @@
-async function loadGroupA() {
-  const response = await fetch("groups.json");
-  const data = await response.json();
-  return data["A"];
+// async function loadGroupA() {
+//   const response = await fetch("groups.json");
+//   const data = await response.json();
+//   return data["A"];
+// }
+
+const fs = require("fs").promises;
+
+// Function to load the group from the local file
+async function loadGroup(groupName) {
+  try {
+    const data = await fs.readFile("./groups.json", "utf8");
+    const jsonData = JSON.parse(data);
+    return jsonData[groupName]; // Returns the specified group
+  } catch (error) {
+    console.error("Error loading JSON:", error);
+  }
 }
 
 // Funkcija koja koristi podatke tima
@@ -10,7 +23,7 @@ function processTeamData(teamName, isoCode, fibaRank) {
 }
 
 // Pozivanje funkcije za svaki tim iz grupe "A"
-loadGroupA().then((teams) => {
+loadGroup("A").then((teams) => {
   teams.forEach((team) => {
     processTeamData(team.Team, team.ISOCode, team.FIBARanking);
   });
@@ -82,11 +95,11 @@ function simulateGroupMatches(teams) {
   }
 }
 
-async function loadGroup(groupName) {
-  const response = await fetch("groups.json");
-  const data = await response.json();
-  return data[groupName]; // Vraća grupu koja je prosleđena
-}
+// async function loadGroup(groupName) {
+//   const response = await fetch("groups.json");
+//   const data = await response.json();
+//   return data[groupName]; // Vraća grupu koja je prosleđena
+// }
 
 // Primer korišćenja sa grupom A
 loadGroup("A").then((teams) => {
