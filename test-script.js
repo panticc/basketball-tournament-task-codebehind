@@ -102,9 +102,9 @@ function simulateGroupMatches(teams) {
 // }
 
 // Primer korišćenja sa grupom A
-loadGroup("A").then((teams) => {
-  simulateGroupMatches(teams);
-});
+// loadGroup("A").then((teams) => {
+//   simulateGroupMatches(teams);
+// });
 
 // Funkcija za simulaciju grupne faze i prikaz po kolima
 function simulateGroupStage(teams) {
