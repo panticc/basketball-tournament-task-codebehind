@@ -1,15 +1,29 @@
-async function loadGroupA() {
-  const response = await fetch("groups.json");
-  const data = await response.json();
-  return data["A"];
+// async function loadGroupA() {
+//   const response = await fetch("groups.json");
+//   const data = await response.json();
+//   return data["A"];
+// }
+
+const fs = require("fs").promises;
+
+// Function to load the group from the local file
+async function loadGroup(groupName) {
+  try {
+    const data = await fs.readFile("./groups.json", "utf8");
+    const jsonData = JSON.parse(data);
+    return jsonData[groupName]; // Returns the specified group
+  } catch (error) {
+    console.error("Error loading JSON:", error);
+  }
 }
 
+// Funkcija koja koristi podatke tima
 function processTeamData(teamName, isoCode, fibaRank) {
   // console.log(`Team: ${teamName}, ISO: ${isoCode}, FIBA Rank: ${fibaRank}`);
 }
 
 // Pozivanje funkcije za svaki tim iz grupe "A"
-loadGroupA().then((teams) => {
+loadGroup("A").then((teams) => {
   teams.forEach((team) => {
     processTeamData(team.Team, team.ISOCode, team.FIBARanking);
   });
@@ -81,16 +95,16 @@ function simulateGroupMatches(teams) {
   }
 }
 
-async function loadGroup(groupName) {
-  const response = await fetch("groups.json");
-  const data = await response.json();
-  return data[groupName];
-}
+// async function loadGroup(groupName) {
+//   const response = await fetch("groups.json");
+//   const data = await response.json();
+//   return data[groupName]; // Vraća grupu koja je prosleđena
+// }
 
 // Primer korišćenja sa grupom A
-loadGroup("A").then((teams) => {
-  simulateGroupMatches(teams);
-});
+// loadGroup("A").then((teams) => {
+//   simulateGroupMatches(teams);
+// });
 
 // Funkcija za simulaciju grupne faze i prikaz po kolima
 function simulateGroupStage(teams) {
@@ -233,32 +247,3 @@ async function simulateTournament() {
 
 // Pokreni turnir
 simulateTournament();
-
-// // Funkcija za simulaciju utakmice
-// function simulateMatch(team1, team2) {
-//   const probabilityTeam1Wins = calculateWinProbability(
-//     team1.FIBARanking,
-//     team2.FIBARanking
-//   );
-//   const randomValue = Math.random();
-
-//   if (randomValue < probabilityTeam1Wins) {
-//     return { winner: team1, loser: team2 };
-//   } else {
-//     return { winner: team2, loser: team1 };
-//   }
-// }
-
-// // Funkcija za simulaciju utakmica između timova iz grupe
-// loadGroupA().then((teams) => {
-//   for (let i = 0; i < teams.length; i++) {
-//     for (let j = i + 1; j < teams.length; j++) {
-//       const team1 = teams[i];
-//       const team2 = teams[j];
-
-//       // Simuliraj utakmicu
-//       const result = simulateMatch(team1, team2);
-//       console.log(`${result.winner.Team} pobedio ${result.loser.Team}`);
-//     }
-//   }
-// });
