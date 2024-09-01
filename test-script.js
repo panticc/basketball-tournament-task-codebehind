@@ -247,32 +247,3 @@ async function simulateTournament() {
 
 // Pokreni turnir
 simulateTournament();
-
-// // Funkcija za simulaciju utakmice
-// function simulateMatch(team1, team2) {
-//   const probabilityTeam1Wins = calculateWinProbability(
-//     team1.FIBARanking,
-//     team2.FIBARanking
-//   );
-//   const randomValue = Math.random();
-
-//   if (randomValue < probabilityTeam1Wins) {
-//     return { winner: team1, loser: team2 };
-//   } else {
-//     return { winner: team2, loser: team1 };
-//   }
-// }
-
-// // Funkcija za simulaciju utakmica između timova iz grupe
-// loadGroupA().then((teams) => {
-//   for (let i = 0; i < teams.length; i++) {
-//     for (let j = i + 1; j < teams.length; j++) {
-//       const team1 = teams[i];
-//       const team2 = teams[j];
-
-//       // Simuliraj utakmicu
-//       const result = simulateMatch(team1, team2);
-//       console.log(`${result.winner.Team} pobedio ${result.loser.Team}`);
-//     }
-//   }
-// });
