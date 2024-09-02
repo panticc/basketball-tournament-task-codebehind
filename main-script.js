@@ -152,29 +152,6 @@ function createQuarterFinals(topTeams) {
   });
 }
 
-// // Funkcija za simulaciju
-// function simulateFinals(semiFinalPairs) {
-//   const finals = [];
-
-//   semiFinalPairs.forEach((pair) => {
-//     const matchResult = simulateMatch(pair[0], pair[1]);
-//     finals.push(matchResult);
-//   });
-
-//   // Simulacija utakmice za treće mesto između poraženih iz polufinala
-//   const bronzeMatch = simulateMatch(finals[0].loser, finals[1].loser);
-//   console.log(`\nUtakmica za treće mesto:\n    ${bronzeMatch.result}`);
-
-//   // Simulacija finala
-//   const finalMatch = simulateMatch(finals[0].winner, finals[1].winner);
-//   console.log(`\nFinale:\n    ${finalMatch.result}`);
-
-//   console.log("\nMedalje:");
-//   console.log(`    1. ${finalMatch.winner.team}`);
-//   console.log(`    2. ${finalMatch.loser.team}`);
-//   console.log(`    3. ${bronzeMatch.winner.team}`);
-// }
-
 // Funkcija za celokupnu simulaciju grupne faze i rangiranja
 async function simulateTournament() {
   const groups = ["A", "B", "C"];
