@@ -1,33 +1,15 @@
-// async function loadGroupA() {
-//   const response = await fetch("groups.json");
-//   const data = await response.json();
-//   return data["A"];
-// }
-
 const fs = require("fs").promises;
 
 // Function to load the group from the local file
 async function loadGroup(groupName) {
   try {
-    const data = await fs.readFile("./groups.json", "utf8");
+    const data = await fs.readFile("groups.json", "utf8");
     const jsonData = JSON.parse(data);
     return jsonData[groupName]; // Returns the specified group
   } catch (error) {
     console.error("Error loading JSON:", error);
   }
 }
-
-// Funkcija koja koristi podatke tima
-function processTeamData(teamName, isoCode, fibaRank) {
-  // console.log(`Team: ${teamName}, ISO: ${isoCode}, FIBA Rank: ${fibaRank}`);
-}
-
-// Pozivanje funkcije za svaki tim iz grupe "A"
-loadGroup("A").then((teams) => {
-  teams.forEach((team) => {
-    processTeamData(team.Team, team.ISOCode, team.FIBARanking);
-  });
-});
 
 // Funkcija za izračunavanje verovatnoće pobede tima 1 nad timom 2
 function calculateWinProbability(rankTeam1, rankTeam2) {
@@ -37,16 +19,10 @@ function calculateWinProbability(rankTeam1, rankTeam2) {
 
 // Funkcija za generisanje bodova na osnovu rangova
 function generateScore(winnerRank, loserRank) {
-  // Osnovni poeni za pobednički tim
-  const winnerScore = Math.floor(Math.random() * 21) + 80; // Generiši bodove između 80 i 100 za pobednički tim
-
-  // Razlika u poenima zavisi od razlike u rangovima
+  const winnerScore = Math.floor(Math.random() * 21) + 80;
   const pointDifference =
-    Math.floor((loserRank - winnerRank) / 2) + Math.floor(Math.random() * 10); // Nasumična komponenta
-
-  // Bodovi za gubitnički tim
+    Math.floor((loserRank - winnerRank) / 2) + Math.floor(Math.random() * 10);
   const loserScore = winnerScore - pointDifference;
-
   return { winnerScore, loserScore };
 }
 
@@ -59,7 +35,6 @@ function simulateMatch(team1, team2) {
   const randomValue = Math.random();
 
   if (randomValue < probabilityTeam1Wins) {
-    // Tim 1 pobeđuje
     const scores = generateScore(team1.FIBARanking, team2.FIBARanking);
     return {
       winner: team1,
@@ -69,7 +44,6 @@ function simulateMatch(team1, team2) {
       result: `${team1.Team}: ${scores.winnerScore} - ${team2.Team}: ${scores.loserScore}`,
     };
   } else {
-    // Tim 2 pobeđuje
     const scores = generateScore(team2.FIBARanking, team1.FIBARanking);
     return {
       winner: team2,
@@ -81,37 +55,11 @@ function simulateMatch(team1, team2) {
   }
 }
 
-// Funkcija za simulaciju utakmica između timova iz prosleđene grupe
-function simulateGroupMatches(teams) {
-  for (let i = 0; i < teams.length; i++) {
-    for (let j = i + 1; j < teams.length; j++) {
-      const team1 = teams[i];
-      const team2 = teams[j];
-
-      // Simuliraj utakmicu
-      const result = simulateMatch(team1, team2);
-      console.log(result.result); // Ispiši rezultat utakmice sa poenima
-    }
-  }
-}
-
-// async function loadGroup(groupName) {
-//   const response = await fetch("groups.json");
-//   const data = await response.json();
-//   return data[groupName]; // Vraća grupu koja je prosleđena
-// }
-
-// Primer korišćenja sa grupom A
-// loadGroup("A").then((teams) => {
-//   simulateGroupMatches(teams);
-// });
-
 // Funkcija za simulaciju grupne faze i prikaz po kolima
 function simulateGroupStage(teams) {
   let results = [];
   let standings = {};
 
-  // Inicijalizacija bodova za svaki tim
   teams.forEach((team) => {
     standings[team.Team] = {
       points: 0,
@@ -121,19 +69,15 @@ function simulateGroupStage(teams) {
     };
   });
 
-  // Simulacija po kolima (ukupno 3 kola po grupi)
   const matchups = [
-    // Kolo 1
     [
       [0, 1],
       [2, 3],
     ],
-    // Kolo 2
     [
       [0, 2],
       [1, 3],
     ],
-    // Kolo 3
     [
       [0, 3],
       [1, 2],
@@ -148,20 +92,17 @@ function simulateGroupStage(teams) {
       const team1 = teams[match[0]];
       const team2 = teams[match[1]];
 
-      const result = simulateMatch(team1, team2); // Simuliraj utakmicu
+      const result = simulateMatch(team1, team2);
       console.log(result.result);
 
-      // Update bodova
       standings[result.winner.Team].points += 2;
       standings[result.loser.Team].points += 1;
 
-      // Update koševa
       standings[result.winner.Team].scoredPoints += result.winnerScore;
       standings[result.winner.Team].concededPoints += result.loserScore;
       standings[result.loser.Team].scoredPoints += result.loserScore;
       standings[result.loser.Team].concededPoints += result.winnerScore;
 
-      // Čuvanje meča
       standings[result.winner.Team].matches.push({
         opponent: result.loser.Team,
         won: true,
@@ -186,7 +127,6 @@ function simulateGroupStage(teams) {
 function rankTeams(standings) {
   return Object.entries(standings)
     .sort(([, a], [, b]) => {
-      // Sortiramo prvo po bodovima, zatim po koš razlici, zatim po postignutim koševima
       const pointDiffA = a.scoredPoints - a.concededPoints;
       const pointDiffB = b.scoredPoints - b.concededPoints;
 
@@ -197,21 +137,104 @@ function rankTeams(standings) {
     .map(([team]) => team);
 }
 
+// Funkcija za kreiranje šešira i žreba četvrtfinala i polufinala
+function createQuarterFinals(topTeams) {
+  const hats = {
+    D: [topTeams[0], topTeams[1]], // rang 1 i 2
+    E: [topTeams[2], topTeams[3]], // rang 3 i 4
+    F: [topTeams[4], topTeams[5]], // rang 5 i 6
+    G: [topTeams[6], topTeams[7]], // rang 7 i 8
+  };
+
+  console.log("\nŠeširi:");
+  Object.entries(hats).forEach(([hat, teams]) => {
+    console.log(`    Šešir ${hat}`);
+    teams.forEach((team) => console.log(`        ${team.team}`));
+  });
+
+  function shuffle(array) {
+    for (let i = array.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [array[i], array[j]] = [array[j], array[i]];
+    }
+    return array;
+  }
+
+  let hatD = shuffle([...hats.D]);
+  let hatE = shuffle([...hats.E]);
+  let hatF = shuffle([...hats.F]);
+  let hatG = shuffle([...hats.G]);
+
+  let quarterFinals = [];
+
+  for (let i = 0; i < hatD.length; i++) {
+    let teamD = hatD[i];
+    let teamG = hatG[i];
+    quarterFinals.push([teamD, teamG]);
+  }
+
+  for (let i = 0; i < hatE.length; i++) {
+    let teamE = hatE[i];
+    let teamF = hatF[i];
+    quarterFinals.push([teamE, teamF]);
+  }
+
+  console.log("\nEliminaciona faza:");
+  let winners = [];
+  quarterFinals.forEach((matchup) => {
+    const matchResult = simulateMatch(matchup[0], matchup[1]);
+    console.log(`    ${matchResult.result}`);
+    winners.push(matchResult.winner);
+  });
+
+  console.log("\nPolufinala:");
+  const semiFinalPairs = [
+    [winners[0], winners[1]],
+    [winners[2], winners[3]],
+  ];
+  semiFinalPairs.forEach((pair) => {
+    const matchResult = simulateMatch(pair[0], pair[1]);
+    console.log(`    ${matchResult.result}`);
+  });
+
+  return semiFinalPairs;
+}
+
+// Funkcija za simulaciju finala i utakmice za treće mesto
+function simulateFinals(semiFinalPairs) {
+  const finals = [];
+
+  semiFinalPairs.forEach((pair) => {
+    const matchResult = simulateMatch(pair[0], pair[1]);
+    finals.push(matchResult);
+  });
+
+  // Simulacija utakmice za treće mesto između poraženih iz polufinala
+  const bronzeMatch = simulateMatch(finals[0].loser, finals[1].loser);
+  console.log(`\nUtakmica za treće mesto:\n    ${bronzeMatch.result}`);
+
+  // Simulacija finala
+  const finalMatch = simulateMatch(finals[0].winner, finals[1].winner);
+  console.log(`\nFinale:\n    ${finalMatch.result}`);
+
+  console.log("\nMedalje:");
+  console.log(`    1. ${finalMatch.winner.team}`);
+  console.log(`    2. ${finalMatch.loser.team}`);
+  console.log(`    3. ${bronzeMatch.winner.team}`);
+}
+
 // Funkcija za celokupnu simulaciju grupne faze i rangiranja
 async function simulateTournament() {
   const groups = ["A", "B", "C"];
   let finalStandings = [];
 
-  // Simulacija po grupama
   for (let groupName of groups) {
     console.log(`\n=== Simulacija za grupu ${groupName} ===`);
     const teams = await loadGroup(groupName);
     const standings = simulateGroupStage(teams);
 
-    // Rangiranje timova u grupi
     const rankedTeams = rankTeams(standings);
 
-    // Prikaz rangiranja
     console.log(`\n--- Rangiranje za grupu ${groupName} ---`);
     rankedTeams.forEach((team, index) => {
       const teamData = standings[team];
@@ -222,27 +245,26 @@ async function simulateTournament() {
       );
     });
 
-    // Dodaj u finalnu tabelu rangiranja
     finalStandings.push(
       ...rankedTeams.map((team, i) => ({ team, rank: i + 1, group: groupName }))
     );
   }
 
-  // Rangiranje timova za prolaz dalje
   const firstPlaceTeams = finalStandings.filter((t) => t.rank === 1);
   const secondPlaceTeams = finalStandings.filter((t) => t.rank === 2);
   const thirdPlaceTeams = finalStandings.filter((t) => t.rank === 3);
 
-  // Biramo top 8 timova
   const topTeams = [...firstPlaceTeams, ...secondPlaceTeams, ...thirdPlaceTeams]
     .sort((a, b) => a.rank - b.rank)
     .slice(0, 8);
 
-  // Prikaz top 8 timova
   console.log(`\n--- Timovi koji su prošli dalje ---`);
   topTeams.forEach((team, index) => {
     console.log(`${index + 1}. ${team.team} (Grupa ${team.group})`);
   });
+
+  const semiFinalPairs = createQuarterFinals(topTeams);
+  simulateFinals(semiFinalPairs);
 }
 
 // Pokreni turnir
