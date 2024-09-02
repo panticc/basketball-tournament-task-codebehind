@@ -1,11 +1,10 @@
 const fs = require("fs").promises;
 
-// Function to load the group from the local file
 async function loadGroup(groupName) {
   try {
     const data = await fs.readFile("groups.json", "utf8");
     const jsonData = JSON.parse(data);
-    return jsonData[groupName]; // Returns the specified group
+    return jsonData[groupName];
   } catch (error) {
     console.error("Error loading JSON:", error);
   }
@@ -137,7 +136,7 @@ function rankTeams(standings) {
     .map(([team]) => team);
 }
 
-// Funkcija za kreiranje šešira i žreba četvrtfinala i polufinala
+// Funkcija za kreiranje šešira
 function createQuarterFinals(topTeams) {
   const hats = {
     D: [topTeams[0], topTeams[1]], // rang 1 i 2
@@ -151,77 +150,30 @@ function createQuarterFinals(topTeams) {
     console.log(`    Šešir ${hat}`);
     teams.forEach((team) => console.log(`        ${team.team}`));
   });
-
-  function shuffle(array) {
-    for (let i = array.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [array[i], array[j]] = [array[j], array[i]];
-    }
-    return array;
-  }
-
-  let hatD = shuffle([...hats.D]);
-  let hatE = shuffle([...hats.E]);
-  let hatF = shuffle([...hats.F]);
-  let hatG = shuffle([...hats.G]);
-
-  let quarterFinals = [];
-
-  for (let i = 0; i < hatD.length; i++) {
-    let teamD = hatD[i];
-    let teamG = hatG[i];
-    quarterFinals.push([teamD, teamG]);
-  }
-
-  for (let i = 0; i < hatE.length; i++) {
-    let teamE = hatE[i];
-    let teamF = hatF[i];
-    quarterFinals.push([teamE, teamF]);
-  }
-
-  console.log("\nEliminaciona faza:");
-  let winners = [];
-  quarterFinals.forEach((matchup) => {
-    const matchResult = simulateMatch(matchup[0], matchup[1]);
-    console.log(`    ${matchResult.result}`);
-    winners.push(matchResult.winner);
-  });
-
-  console.log("\nPolufinala:");
-  const semiFinalPairs = [
-    [winners[0], winners[1]],
-    [winners[2], winners[3]],
-  ];
-  semiFinalPairs.forEach((pair) => {
-    const matchResult = simulateMatch(pair[0], pair[1]);
-    console.log(`    ${matchResult.result}`);
-  });
-
-  return semiFinalPairs;
 }
 
-// Funkcija za simulaciju finala i utakmice za treće mesto
-function simulateFinals(semiFinalPairs) {
-  const finals = [];
+// // Funkcija za simulaciju
+// function simulateFinals(semiFinalPairs) {
+//   const finals = [];
 
-  semiFinalPairs.forEach((pair) => {
-    const matchResult = simulateMatch(pair[0], pair[1]);
-    finals.push(matchResult);
-  });
+//   semiFinalPairs.forEach((pair) => {
+//     const matchResult = simulateMatch(pair[0], pair[1]);
+//     finals.push(matchResult);
+//   });
 
-  // Simulacija utakmice za treće mesto između poraženih iz polufinala
-  const bronzeMatch = simulateMatch(finals[0].loser, finals[1].loser);
-  console.log(`\nUtakmica za treće mesto:\n    ${bronzeMatch.result}`);
+//   // Simulacija utakmice za treće mesto između poraženih iz polufinala
+//   const bronzeMatch = simulateMatch(finals[0].loser, finals[1].loser);
+//   console.log(`\nUtakmica za treće mesto:\n    ${bronzeMatch.result}`);
 
-  // Simulacija finala
-  const finalMatch = simulateMatch(finals[0].winner, finals[1].winner);
-  console.log(`\nFinale:\n    ${finalMatch.result}`);
+//   // Simulacija finala
+//   const finalMatch = simulateMatch(finals[0].winner, finals[1].winner);
+//   console.log(`\nFinale:\n    ${finalMatch.result}`);
 
-  console.log("\nMedalje:");
-  console.log(`    1. ${finalMatch.winner.team}`);
-  console.log(`    2. ${finalMatch.loser.team}`);
-  console.log(`    3. ${bronzeMatch.winner.team}`);
-}
+//   console.log("\nMedalje:");
+//   console.log(`    1. ${finalMatch.winner.team}`);
+//   console.log(`    2. ${finalMatch.loser.team}`);
+//   console.log(`    3. ${bronzeMatch.winner.team}`);
+// }
 
 // Funkcija za celokupnu simulaciju grupne faze i rangiranja
 async function simulateTournament() {
@@ -264,7 +216,6 @@ async function simulateTournament() {
   });
 
   const semiFinalPairs = createQuarterFinals(topTeams);
-  simulateFinals(semiFinalPairs);
 }
 
 // Pokreni turnir
